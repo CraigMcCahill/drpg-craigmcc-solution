@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import DataTable from 'react-data-table-component';
+import Modal from 'react-modal';
 import { API_URL } from '../constants';
+import UpdateUser from './UpdateUser';
 
 export interface User {
   id: number;
@@ -26,6 +28,8 @@ function Dashboard() {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [userToEdit, setUserToEdit] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,8 +42,12 @@ function Dashboard() {
         setData(result.data);
         setFilteredData(result.data);
         setTotalPages(result.total_pages);
-      } catch (error: any) {
-        setError(error.message);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError('An unknown error occurred');
+        }
       } finally {
         setLoading(false);
       }
@@ -78,9 +86,27 @@ function Dashboard() {
         selector: (row: User) => row.last_name,
         sortable: true,
       },
+      {
+        name: 'Action',
+        cell: (row: User) => (
+          <button onClick={() => editUser(row)}>
+            Edit Details
+          </button>
+        ),
+				ignoreRowClick: true,
+			},
     ],
     [],
   );
+
+  const editUser = (row: User) => {
+    setModalIsOpen(true);
+    setUserToEdit(row);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  }
 
   if (loading) {
     return <p>Loading...</p>;
@@ -117,6 +143,14 @@ function Dashboard() {
           Next
         </button>
       </div>
+      <Modal
+        contentLabel="Update User Details"
+        isOpen={modalIsOpen}
+      >
+        <h2>Edit Details</h2>
+        <button onClick={closeModal}>close</button>
+        {userToEdit && <UpdateUser user={userToEdit} />}
+      </Modal>
     </div>
   );
 }
