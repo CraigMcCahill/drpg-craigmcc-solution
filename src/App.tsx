@@ -1,16 +1,13 @@
 import React from 'react';
 import './App.css';
+import Dashboard from './components/Dashboard';
 
 function App() {
   return (
     <div className='App'>
-      <header className="App-header">
-        <img
-          src={"https://www.drpgroup.com/hubfs/drpg-blue-logo.png"}
-          className="App-logo"
-          alt="logo"
-        />
-      </header>
+      <article>
+        <Dashboard />
+      </article>
     </div>
   );
 }
