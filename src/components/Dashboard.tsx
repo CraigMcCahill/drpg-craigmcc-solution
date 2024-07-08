@@ -24,17 +24,19 @@ function Dashboard() {
   const [data, setData] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [currentPage,setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
-        const response = await fetch(API_URL);
+        const response = await fetch(`${API_URL}?page=${currentPage}`);
         if (!response.ok) {
-          throw new Error('Oops something went wrong!');
+          throw new Error('Unable to connect to API');
         }
         const result: Users = await response.json();
         setData(result.data);
+        setTotalPages(result.total_pages);
       } catch (error: any) {
         setError(error.message);
       } finally {
@@ -43,7 +45,7 @@ function Dashboard() {
     };
 
     fetchData();
-  }, []);
+  }, [currentPage]);
 
   const columns = useMemo(
 		() => [
@@ -80,13 +82,27 @@ function Dashboard() {
   }
 
   return (
-   <div>
+  <div>
     <DataTable 
       title="Users"
       data={data}
       columns={columns}
     />
-   </div>
+    <div>
+      <button
+        onClick={() => setCurrentPage(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
+        Previous
+      </button>
+      <button
+        onClick={() => setCurrentPage(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      >
+        Next
+      </button>
+    </div>
+  </div>
   );
 }
 
