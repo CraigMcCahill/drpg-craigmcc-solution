@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import DataTable from 'react-data-table-component';
 import Modal from 'react-modal';
-import { API_URL } from '../constants';
-import UpdateUser from './UpdateUser';
+import { API_URL } from '../../constants';
+import UpdateUser from '../UpdateUser/UpdateUser';
 
 export interface User {
   id: number;
