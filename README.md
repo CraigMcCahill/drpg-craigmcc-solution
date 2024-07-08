@@ -1,45 +1,28 @@
-# DRPG Coding Test
+# DRPG Coding Test - Craig McCahill
 
-This is the React coding test to access your skills and thought process when coming to build features in an application. 
+## Run app
 
-Please send any questions you have through to paul.stevenson@drpgroup.com  
+    npm run start
 
-Please read through the task below and send through any questions you may have before getting started. Please timebox your effort to around 3-4 hours working through the task. (Excluding initial React setup) 
 
-Your solution should be shared on a public Github repo showing a full commit history. Please share a link to the github repository to the above email address. 
+## Test
 
-## Our Expectation
+    npm run test
 
-Using the project provided we want you to integrate with a 3rd party API to pull in user data. There are a few pointers we would suggest to think about when coming up with your solutions: 
+## Approach
 
- - How we would be able to test this using Jest/Mocha in the future if we needed to? 
+* Two simple components one for dashboard itself and one for the edit form 
+* Added packages for the table and modal- these are common UI elements that are best handled by 3rd party libs
+* Using hooks - useEffect for calling the API itself and useMemo for table rendering
+* Have tried to cover as much logic in the two components as possible by mocking the API
+* Search and pagination is very naive
 
- - Don't always write everything yourself you can pull in other packages if you feel they are needed. 
+## Improvements I would add
 
- - You can use Hooks or standard react, but in either case the correct use of props and state is required, as well as correct component abstraction. 
- - This is not a UX test, focus on the functionality 
- - Include a README detailing starting the app, what you’d do if you had more time and your approach 
- - This is your opportunity to show us what you can do. Please don’t think of this as just completing the functional task – wow us. 
- 
-## Task
-
-We want to create a simple dashboard using react and typescript for showing user data. Follow the layout provided below.
-
-      
-| Avatar    | First name            | Last name         | Email                         | Action          |
-|-----------|-----------------------|-------------------|-------------------------------|-----------------|
-| image       | Michael             | Lawson            | michael.lawson@reqres.in      | Edit Details
-| image       | Lindsay             | Ferguson          | lindsay.ferguson@reqres.in    | Edit Details
-| image       | Tobias              | Funke             | tobias.funke@reqres.in        | Edit Details
-| ...       | ...                   | ...               | ...                           |  
-
- - Create a table using [https://reqres.in/] to fill it with user data, with pagination. 
- - We want to search users by email address and last name 
- - Implement a simple modal window when user click 'Edit Details' to edit details using [https://reqres.in/] 
- - In the edit details window we want to be able to update the selected user, and send it back to API 
-
-## Bonus points
- - Cover your code with tests you think are most appropriate 
- - Error handling 
- - Handle the loading of the data 
- - Use Typescript 
+* Search is extremely naive and only searches the current page - ideally there would be a way of searching through the API - but I could not see one. Failing that the users on each page could be concatenated together and filtered - BUT this would not very efficient as the list became longer.
+* Move search to a separate component
+* Search could be fuzzy
+* Pagination should show the number of pages allowing you to click on an individual page
+* Add test for opening and closing the modal 
+* Add test for loading in the edit details form
+* UX is terrible (no mobile view, fails accessibility tests etc) but I understand this wasn't part of the test

@@ -120,7 +120,7 @@ function Dashboard() {
 
   return (
     <div>
-       <label htmlFor="search">First Name:</label>
+       <label htmlFor="search">Search:</label>
       <input
         type="search"
         id="search"
