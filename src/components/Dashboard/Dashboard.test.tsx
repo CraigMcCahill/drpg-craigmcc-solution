@@ -1,8 +1,6 @@
-import React from 'react';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Dashboard from './Dashboard';
-import { API_URL } from '../../constants';
 
 jest.mock('../../constants', () => ({
   API_URL: 'https://mock-api.com/users',
@@ -50,7 +48,9 @@ test('renders loading state initially', () => {
 });
 
 test('renders user data after fetching', async () => {
-  render(<Dashboard />);
+  await act(async () => {
+    render(<Dashboard />);
+  });
   await waitFor(() => expect(screen.getByText('Users')).toBeInTheDocument());
   expect(screen.getByText('craig.mccahill@example.com')).toBeInTheDocument();
   expect(screen.getByText('Craig')).toBeInTheDocument();
@@ -58,7 +58,9 @@ test('renders user data after fetching', async () => {
 });
 
 test('handles search functionality', async () => {
-  render(<Dashboard />);
+  await act(async () => {
+    render(<Dashboard />);
+  });
   await waitFor(() => expect(screen.getByText('Users')).toBeInTheDocument());
 
   const searchInput = screen.getByPlaceholderText('Search by last name, or email');
@@ -68,7 +70,9 @@ test('handles search functionality', async () => {
 });
 
 test('handles pagination', async () => {
-  render(<Dashboard />);
+  await act(async () => {
+    render(<Dashboard />);
+  });
   await waitFor(() => expect(screen.getByText('Users')).toBeInTheDocument());
 
   const nextButton = screen.getByText('Next');
