@@ -11,8 +11,8 @@ jest.mock('../../constants', () => ({
 const mockUserData = {
   page: 1,
   per_page: 1,
-  total: 1,
-  total_pages: 1,
+  total: 2,
+  total_pages: 2,
   data: [
     {
       id: 1,
@@ -20,6 +20,13 @@ const mockUserData = {
       first_name: 'Craig',
       last_name: 'McCahill',
       avatar: 'https://example.com/avatar.jpg',
+    },
+    {
+      id: 2,
+      email: 'jane.doe@example.com',
+      first_name: 'Jane',
+      last_name: 'Doe',
+      avatar: 'https://example.com/avatar2.jpg',
     },
   ],
 };
@@ -58,4 +65,14 @@ test('handles search functionality', async () => {
   fireEvent.change(searchInput, { target: { value: 'craig' } });
 
   expect(screen.getByText('craig.mccahill@example.com')).toBeInTheDocument();
+});
+
+test('handles pagination', async () => {
+  render(<Dashboard />);
+  await waitFor(() => expect(screen.getByText('Users')).toBeInTheDocument());
+
+  const nextButton = screen.getByText('Next');
+  fireEvent.click(nextButton);
+
+  expect(fetch).toHaveBeenCalledWith('https://mock-api.com/users?page=2');
 });
