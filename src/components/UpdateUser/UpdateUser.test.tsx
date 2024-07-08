@@ -41,3 +41,58 @@ test('handles form input changes', () => {
   expect(screen.getByLabelText('Last Name:')).toHaveValue('Smith');
   expect(screen.getByLabelText('Email:')).toHaveValue('jane.smith@example.com');
 });
+
+test('submits the form successfully', async () => {
+  (global.fetch as jest.Mock).mockResolvedValue({
+    ok: true,
+    json: () => Promise.resolve(mockUser),
+  });
+
+  await act(async () => {
+    render(<UpdateUser user={mockUser} />);
+  });
+
+  fireEvent.change(screen.getByLabelText('First Name:'), { target: { value: 'Jane' } });
+  fireEvent.change(screen.getByLabelText('Last Name:'), { target: { value: 'Smith' } });
+  fireEvent.change(screen.getByLabelText('Email:'), { target: { value: 'jane.smith@example.com' } });
+
+  await act(async () => {
+    fireEvent.submit(screen.getByRole('button', { name: /Update User/i }));
+  });
+
+  expect(global.fetch).toHaveBeenCalledWith(
+    'https://mock-api.com/users/1',
+    expect.objectContaining({
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...mockUser,
+        first_name: 'Jane',
+        last_name: 'Smith',
+        email: 'jane.smith@example.com',
+      }),
+    })
+  );
+
+  expect(screen.getByRole('button', { name: /Update User/i })).not.toBeDisabled();
+});
+
+test('handles form submission error', async () => {
+  (global.fetch as jest.Mock).mockResolvedValue({
+    ok: false,
+  });
+
+  render(<UpdateUser user={mockUser} />);
+
+  fireEvent.change(screen.getByLabelText('First Name:'), { target: { value: 'Jane' } });
+
+  await act(async () => {
+    fireEvent.submit(screen.getByRole('button', { name: /Update User/i }));
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('Error: Failed to update user')).toBeInTheDocument();
+  });
+});
