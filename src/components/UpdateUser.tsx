@@ -88,6 +88,7 @@ function UpdateUser({ user }: UpdateUserProps) {
           onChange={handleChange}
         />
       </div>
+      <br />
       <button type="submit" disabled={loading}>
         {loading ? 'Updating...' : 'Update User'}
       </button>

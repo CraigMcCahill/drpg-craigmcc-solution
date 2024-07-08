@@ -67,9 +67,11 @@ function Dashboard() {
   const columns = useMemo(
     () => [
       {
-        name: 'ID',
-        selector: (row: User) => row.id,
-        sortable: true,
+        name: 'Avatar',
+        cell: (row: User) => (
+          <img src={row.avatar} alt={row.first_name} />
+        ),
+				ignoreRowClick: true,
       },
       {
         name: 'Email',
@@ -118,8 +120,10 @@ function Dashboard() {
 
   return (
     <div>
+       <label htmlFor="search">First Name:</label>
       <input
         type="search"
+        id="search"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder="Search by last name, or email"
@@ -148,8 +152,9 @@ function Dashboard() {
         isOpen={modalIsOpen}
       >
         <h2>Edit Details</h2>
-        <button onClick={closeModal}>close</button>
         {userToEdit && <UpdateUser user={userToEdit} />}
+        <br />
+        <button onClick={closeModal}>Close</button>
       </Modal>
     </div>
   );

@@ -6,7 +6,9 @@ function App() {
   return (
     <div className='App'>
       <article>
+        <h1>User Dashboard</h1>
         <Dashboard />
+        <br />
       </article>
     </div>
   );
