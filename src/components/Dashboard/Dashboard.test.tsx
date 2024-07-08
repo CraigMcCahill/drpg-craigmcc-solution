@@ -49,3 +49,13 @@ test('renders user data after fetching', async () => {
   expect(screen.getByText('Craig')).toBeInTheDocument();
   expect(screen.getByText('McCahill')).toBeInTheDocument();
 });
+
+test('handles search functionality', async () => {
+  render(<Dashboard />);
+  await waitFor(() => expect(screen.getByText('Users')).toBeInTheDocument());
+
+  const searchInput = screen.getByPlaceholderText('Search by last name, or email');
+  fireEvent.change(searchInput, { target: { value: 'craig' } });
+
+  expect(screen.getByText('craig.mccahill@example.com')).toBeInTheDocument();
+});
