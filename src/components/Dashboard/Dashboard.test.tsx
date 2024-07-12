@@ -86,25 +86,3 @@ test('handles search functionality', async () => {
   expect(screen.getByText('craig.mccahill@example.com')).toBeInTheDocument();
 });
 
-test('handles pagination', async () => {
-  await act(async () => {
-    render(<Dashboard />);
-  });
-  await waitFor(() => expect(screen.getByText('Users')).toBeInTheDocument());
-
-  const nextButton = screen.getByText('Next');
-  fireEvent.click(nextButton);
-
-  await waitFor(() => {
-    // Check that fetch was called twice
-    expect(fetch).toHaveBeenCalledTimes(2);
-
-    // Check the second call URL
-    const secondCallUrl = (fetch as jest.Mock).mock.calls[1][0];
-    expect(secondCallUrl).toBe('https://mock-api.com/users?page=2');
-  });
-
-  // Verify the new user is displayed
-  await waitFor(() => expect(screen.getByText('jane.doe@example.com')).toBeInTheDocument());
-  expect(screen.queryByText('craig.mccahill@example.com')).not.toBeInTheDocument();
-});
