@@ -6,7 +6,7 @@ jest.mock('../../constants', () => ({
   API_URL: 'https://mock-api.com/users',
 }));
 
-const mockUserData = {
+const mockUserDataPage1 = {
   page: 1,
   per_page: 1,
   total: 2,
@@ -19,6 +19,15 @@ const mockUserData = {
       last_name: 'McCahill',
       avatar: 'https://example.com/avatar.jpg',
     },
+  ],
+};
+
+const mockUserDataPage2 = {
+  page: 2,
+  per_page: 1,
+  total: 2,
+  total_pages: 2,
+  data: [
     {
       id: 2,
       email: 'jane.doe@example.com',
@@ -30,10 +39,18 @@ const mockUserData = {
 };
 
 beforeEach(() => {
-  global.fetch = jest.fn(() =>
+  global.fetch = jest.fn((url) =>
     Promise.resolve({
       ok: true,
-      json: () => Promise.resolve(mockUserData),
+      json: () => {
+        if (url.includes('page=1')) {
+          return Promise.resolve(mockUserDataPage1);
+        }
+        if (url.includes('page=2')) {
+          return Promise.resolve(mockUserDataPage2);
+        }
+        return Promise.resolve(mockUserDataPage1);
+      },
     })
   ) as jest.Mock;
 });
@@ -78,5 +95,16 @@ test('handles pagination', async () => {
   const nextButton = screen.getByText('Next');
   fireEvent.click(nextButton);
 
-  expect(fetch).toHaveBeenCalledWith('https://mock-api.com/users?page=2');
+  await waitFor(() => {
+    // Check that fetch was called twice
+    expect(fetch).toHaveBeenCalledTimes(2);
+
+    // Check the second call URL
+    const secondCallUrl = (fetch as jest.Mock).mock.calls[1][0];
+    expect(secondCallUrl).toBe('https://mock-api.com/users?page=2');
+  });
+
+  // Verify the new user is displayed
+  await waitFor(() => expect(screen.getByText('jane.doe@example.com')).toBeInTheDocument());
+  expect(screen.queryByText('craig.mccahill@example.com')).not.toBeInTheDocument();
 });
