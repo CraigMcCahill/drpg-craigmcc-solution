@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { API_URL } from '../../constants';
-import { User } from '../Dashboard/Dashboard';
+import { User } from '../../types/user';
 
 interface UpdateUserProps {
   user: User;
