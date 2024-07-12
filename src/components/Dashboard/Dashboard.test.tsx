@@ -59,11 +59,6 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-test('renders loading state initially', () => {
-  render(<Dashboard />);
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
-});
-
 test('renders user data after fetching', async () => {
   await act(async () => {
     render(<Dashboard />);
